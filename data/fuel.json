@@ -1,0 +1,9 @@
+{
+  "grades": [
+    { "id": "regular", "name": "Regular", "price": 3.09 },
+    { "id": "premium", "name": "Premium", "price": 3.69 },
+    { "id": "diesel", "name": "Diesel", "price": 3.49 },
+    { "id": "rec90", "name": "Rec 90", "price": 3.89 }
+  ],
+  "inside": "LP gas & kerosene inside"
+}

@@ -1,26 +1,229 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   Luzerne Express — Luzerne, MI — design tokens
+   The store's own roadside sign, translated: stacked panels of red and birch
+   divided by a thin gold rule, standing in the jack-pine woods that surround
+   the place. Pine leads (the forest you drive through to get here), ember red
+   and birch alternate down the page like sign panels, and gold is the thread:
+   "Express", the seams between panels, and accents that sit on pine (a
+   headline's second line, small labels, outline buttons, what's lit "today").
+   Never gold text on birch.
+   =========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Jack pine — the woods. The lead color: hero, header, dark bands. */
+  --pine: #23402f;
+  --pine-deep: #172c20;       /* deepest band — footer */
+  --pine-soft: #dce6de;       /* pale pine wash */
+
+  /* Sign gold — "Express" and the seams between panels. Never body text on light. */
+  --gold: #d9a441;
+  --gold-deep: #b8862a;       /* hovers on dark */
+  --gold-soft: #f3e3bc;
+
+  /* Ember red — the sign's red panels: buttons, red bands, headings on birch. */
+  --ember: #a63a2b;
+  --ember-deep: #862c20;      /* hovers, active */
+  --ember-soft: #f7dcd6;      /* secondary text on red */
+
+  /* Birch + bark — the warm neutrals. */
+  --birch: #f4efe4;           /* page background, light panels */
+  --paper: #fbf8f1;           /* cards */
+  --bark: #2b241e;            /* text */
+  --ash: #5a4f45;             /* secondary text on birch */
+  --stone: #857a6e;           /* labels */
+  --pine-mist: #c9d6cc;       /* secondary text on pine */
+  --hairline: #e3dacb;
+
+  /* Kindling site conventions: theme (docs/site-conventions.md, in Pilot Light) */
+  --background: var(--birch);
+  --foreground: var(--bark);
+  --surface: var(--paper);
+  --border: var(--hairline);
+  --muted-foreground: var(--ash);
+  --brand: var(--pine);
+  --brand-foreground: var(--birch);
+  --font-body: var(--font-nunito-sans);
+  --font-heading: var(--font-bree-serif);
+
+  /* style */
+  --outline: var(--pine);
+  --outline-width: 2px;
+  --radius: 12px;
+  --radius-field: 10px;
+  --radius-button: 8px;
+  --shadow: none;
+  --shadow-button: none;
+  --brand-soft: var(--pine-soft);
+  --brand-soft-foreground: var(--pine);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-pine: var(--pine);
+  --color-gold: var(--gold);
+  --color-ember: var(--ember);
+  --color-birch: var(--birch);
+  --color-bark: var(--bark);
+  --font-heading: var(--font-bree-serif);
+  --font-body: var(--font-nunito-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Tailwind v4's preflight drops the button cursor — put it back. */
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
 }
 
+/* ---- Base ----------------------------------------------------------------- */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
 }
+
+h1, h2, h3, .heading {
+  font-family: var(--font-heading), Georgia, serif;
+  font-weight: 400;
+  line-height: 1.08;
+}
+
+.container-x {
+  width: 100%;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .container-x { padding-inline: 2rem; }
+}
+
+/* The gold seam — the thin rule between sign panels. */
+.seam {
+  height: 4px;
+  background: var(--gold);
+}
+
+/* Small tracked caps — the sign's sub-panel lettering. */
+.label {
+  font-family: var(--font-body), sans-serif;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* ---- Buttons -------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.7rem 1.25rem;
+  border-radius: var(--radius-button);
+  font-family: var(--font-body), sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1;
+  border: 2px solid transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.btn-ember { background: var(--ember); color: var(--birch); }
+.btn-ember:hover { background: var(--ember-deep); }
+.btn-gold-line { border-color: var(--gold); color: var(--gold); }
+.btn-gold-line:hover { background: var(--gold); color: var(--bark); }
+.btn-pine { background: var(--pine); color: var(--birch); }
+.btn-pine:hover { background: var(--pine-deep); }
+.btn-birch { background: var(--birch); color: var(--ember); }
+.btn-birch:hover { background: var(--paper); }
+
+/* A quiet text link with an arrow — "See the store →" */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+.link-arrow svg { transition: transform 0.15s ease; }
+.link-arrow:hover svg { transform: translateX(3px); }
+
+/* Photos sit in plain rounded frames. */
+.photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+/* ---- Phone menu entrance -------------------------------------------------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.45s ease-out forwards; opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up { animation: none; opacity: 1; }
+  .btn, .link-arrow svg { transition: none; }
+}
+
+/* Anchored sections land below the sticky header. */
+section[id] { scroll-margin-top: 84px; }
+
+/* ---- Butcher's tag — the meat counter's paper price tag ------------------- */
+.butcher-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 1.1rem 0.55rem 1.9rem;
+  background: var(--birch);
+  color: var(--bark);
+  font-family: var(--font-heading), Georgia, serif;
+  font-size: 1.15rem;
+  clip-path: polygon(0.9rem 0, 100% 0, 100% 100%, 0.9rem 100%, 0 50%);
+}
+.butcher-tag::before {
+  content: "";
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: -0.225rem;
+  border-radius: 9999px;
+  background: var(--ember);
+}
+
+/* A small kraft price tag for menu prices. */
+.price-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0.2rem 0.6rem 0.2rem 1.15rem;
+  background: var(--gold-soft);
+  color: var(--bark);
+  font-weight: 800;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  clip-path: polygon(0.55rem 0, 100% 0, 100% 100%, 0.55rem 100%, 0 50%);
+}
+.price-tag::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  width: 0.3rem;
+  height: 0.3rem;
+  margin-top: -0.15rem;
+  border-radius: 9999px;
+  background: var(--ember);
+}
+/* On birch, the tag goes kraft so it still reads as a tag. */
+.butcher-tag-kraft { background: var(--gold-soft); }

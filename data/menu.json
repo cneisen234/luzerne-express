@@ -1,0 +1,47 @@
+{
+  "sections": [
+    {
+      "id": "breakfast",
+      "title": "Breakfast",
+      "items": [
+        { "name": "Two eggs, hash browns & toast", "price": "$7.99" },
+        { "name": "Biscuits & gravy", "price": "$6.99" },
+        { "name": "Breakfast sandwich", "price": "$4.99" },
+        { "name": "Breakfast burrito", "price": "$6.49" },
+        { "name": "Pancake stack", "price": "$6.99" }
+      ]
+    },
+    {
+      "id": "grill",
+      "title": "Off the grill",
+      "items": [
+        { "name": "Express burger & fries", "price": "$10.99" },
+        { "name": "Bacon cheeseburger basket", "price": "$11.99" },
+        { "name": "Grilled chicken sandwich", "price": "$10.49" },
+        { "name": "Chicken tenders & fries", "price": "$9.99" }
+      ]
+    },
+    {
+      "id": "pizza",
+      "title": "Pizza",
+      "note": "12″ / 16″",
+      "items": [
+        { "name": "Cheese", "price": "$11.99 / $15.99" },
+        { "name": "Pepperoni", "price": "$12.99 / $16.99" },
+        { "name": "Supreme", "price": "$15.99 / $20.99" },
+        { "name": "Meat lover's", "price": "$15.99 / $20.99" }
+      ]
+    },
+    {
+      "id": "subs",
+      "title": "Subs",
+      "items": [
+        { "name": "Italian", "price": "$9.49" },
+        { "name": "Turkey club", "price": "$9.49" },
+        { "name": "Ham & cheese", "price": "$8.99" },
+        { "name": "Steak & cheese", "price": "$10.49" }
+      ]
+    }
+  ],
+  "baked": ["Cinnamon rolls", "Cookies", "Fruit pies", "Muffins"]
+}
