@@ -1,12 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { hours } from "@/lib/express";
+import type { WeekHours } from "@/lib/db";
 import { storeNow, to12h } from "@/lib/time";
 
 // The week's store hours on a letter board — pine header, gold seam, one row
 // per day with today lit up. "Today" is Luzerne's today; nothing is lit on the
-// server, so nothing flickers.
+// server, so nothing flickers. Hours come from the store's database (null while
+// they load: the rows show without times).
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const ORDER = [1, 2, 3, 4, 5, 6, 0];
@@ -16,7 +17,7 @@ function subscribe(onChange: () => void) {
   return () => clearInterval(id);
 }
 
-export default function HoursBoard() {
+export default function HoursBoard({ hours }: { hours: WeekHours | null }) {
   const today = useSyncExternalStore(subscribe, () => storeNow().day, () => -1);
 
   return (
@@ -27,7 +28,7 @@ export default function HoursBoard() {
       <div className="seam" aria-hidden="true" />
       <ul>
         {ORDER.map((d, i) => {
-          const h = hours[d];
+          const h = hours?.[d];
           const lit = d === today;
           return (
             <li
@@ -47,7 +48,7 @@ export default function HoursBoard() {
                 ) : null}
               </span>
               <span className="font-extrabold tabular-nums" style={{ color: lit ? "var(--gold)" : "var(--pine)" }}>
-                {h ? `${to12h(h.open)} – ${to12h(h.close)}` : "Closed"}
+                {!hours ? " " : h ? `${to12h(h.open)} – ${to12h(h.close)}` : "Closed"}
               </span>
             </li>
           );

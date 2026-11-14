@@ -1,4 +1,5 @@
-import { TIME_ZONE, hours } from "@/lib/express";
+import { TIME_ZONE } from "@/lib/express";
+import type { WeekHours } from "@/lib/db";
 
 // The store's local day + decimal hour, wherever the visitor is.
 export function storeNow(date = new Date()): { day: number; dec: number } {
@@ -26,10 +27,11 @@ export function to12h(dec: number): string {
 }
 
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export type Status = { open: boolean; line: string };
 
-export function storeStatus(date = new Date()): Status {
+export function storeStatus(hours: WeekHours, date = new Date()): Status {
   const { day, dec } = storeNow(date);
   const today = hours[day];
   if (today && dec >= today.open && dec < today.close) {
@@ -44,4 +46,19 @@ export function storeStatus(date = new Date()): Status {
     if (i > 1) return { open: false, line: `Opens ${DAY_NAMES[d]} ${to12h(h.open)}` };
   }
   return { open: false, line: "" };
+}
+
+/** The week's hours in short lines, Monday first, days with the same hours run together ("Mon – Thu: 6 AM – 8 PM"). */
+export function hoursLines(hours: WeekHours): { label: string; value: string }[] {
+  const order = [1, 2, 3, 4, 5, 6, 0];
+  const value = (d: number) => (hours[d] ? `${to12h(hours[d]!.open)} – ${to12h(hours[d]!.close)}` : "Closed");
+  const lines: { label: string; value: string }[] = [];
+  for (let i = 0; i < order.length; ) {
+    let j = i;
+    while (j + 1 < order.length && value(order[j + 1]) === value(order[i])) j++;
+    const label = i === j ? DAY_NAMES[order[i]] : `${SHORT[order[i]]} – ${SHORT[order[j]]}`;
+    lines.push({ label, value: value(order[i]) });
+    i = j + 1;
+  }
+  return lines;
 }

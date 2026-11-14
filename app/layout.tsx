@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bree_Serif, Nunito_Sans } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
+import { SiteHeader } from "@/components/Live";
 import Footer from "@/components/Footer";
 import { express } from "@/lib/express";
 
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${bree.variable} ${nunito.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Navigation />
+        <SiteHeader />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { express, navLinks, mainAction } from "@/lib/express";
+import type { WeekHours } from "@/lib/db";
 import { SignPanel } from "./Logo";
 import { OpenChip } from "./OpenStatus";
 
@@ -14,7 +15,8 @@ import { OpenChip } from "./OpenStatus";
 // stacked like sign panels between thin gold seams, main button and contact
 // at the bottom.
 
-export default function Navigation() {
+/** `hours`: the store's hours for the open chip (null while they load). */
+export default function Navigation({ hours }: { hours: WeekHours | null }) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -78,7 +80,7 @@ export default function Navigation() {
           {/* Desktop right: open status + phone, main button */}
           <div className="hidden lg:flex items-center gap-5">
             <div className="flex flex-col items-end gap-0.5">
-              <OpenChip showLine={false} />
+              <OpenChip hours={hours} showLine={false} />
               <a href={express.storePhoneHref} className="text-xs font-bold hover:underline" style={{ color: "var(--pine-mist)" }}>
                 {express.storePhone}
               </a>
@@ -90,7 +92,7 @@ export default function Navigation() {
 
           {/* Phone: open status + menu button */}
           <div className="flex lg:hidden items-center gap-3">
-            <OpenChip showLine={false} />
+            <OpenChip hours={hours} showLine={false} />
             <button
               type="button"
               className="relative flex h-11 w-11 items-center justify-center rounded-lg transition-colors"

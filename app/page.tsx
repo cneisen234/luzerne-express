@@ -2,10 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Arrow, Photo, Seam } from "@/components/Bits";
 import { mainAction, campingFrom } from "@/lib/express";
-import specials from "@/data/specials.json";
 import FuelBoard from "@/components/FuelBoard";
-import TonightSpecial from "@/components/TonightSpecial";
-import { OpenSign } from "@/components/OpenStatus";
+import { LiveBuffet, LiveOpenSign, LiveTonightSpecial } from "@/components/Live";
 import { TrailBadge } from "@/components/Logo";
 
 // Home reads like the store's pylon sign: a pine hero in the woods, then the
@@ -46,7 +44,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="mt-10">
-              <OpenSign />
+              <LiveOpenSign />
             </div>
           </div>
 
@@ -101,12 +99,12 @@ export default function Home() {
               Breakfast, burgers, pizza and subs.
             </p>
             <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-end">
-              <TonightSpecial />
+              <LiveTonightSpecial />
               <p className="text-sm font-bold" style={{ color: "var(--pine)" }}>
                 Breakfast buffet
                 <br />
                 <span style={{ color: "var(--ash)" }}>
-                  {specials.buffet.days} · {specials.buffet.time}
+                  <LiveBuffet part="days" /> · <LiveBuffet part="time" />
                 </span>
               </p>
             </div>

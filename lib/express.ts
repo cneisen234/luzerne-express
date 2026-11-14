@@ -47,29 +47,17 @@ export const navLinks = [
 
 export const mainAction = { href: "/camping", label: "Book a site" } as const;
 
-// ---- Hours ------------------------------------------------------------------
-// 0 = Sun … 6 = Sat. open/close are 24h decimal hours, Luzerne (Eastern) time.
-// From the store's posted winter hours.
-export type DayHours = { open: number; close: number } | null;
-
-export const hours: Record<number, DayHours> = {
-  0: { open: 7, close: 20 }, // Sun 7–8
-  1: { open: 6, close: 20 }, // Mon 6–8
-  2: { open: 6, close: 20 }, // Tue 6–8
-  3: { open: 6, close: 20 }, // Wed 6–8
-  4: { open: 6, close: 20 }, // Thu 6–8
-  5: { open: 6, close: 21 }, // Fri 6–9
-  6: { open: 7, close: 21 }, // Sat 7–9
-};
-
-export const hoursDisplay = [
-  { label: "Mon – Thu", value: "6 AM – 8 PM" },
-  { label: "Friday", value: "6 AM – 9 PM" },
-  { label: "Saturday", value: "7 AM – 9 PM" },
-  { label: "Sunday", value: "7 AM – 8 PM" },
-] as const;
-
+// ---- Hours, specials and menu -------------------------------------------------
+// They live in the store's database, managed in Pilot Light (lib/db.ts). Here:
+// only the time zone they're in and the menu sections' titles.
 export const TIME_ZONE = "America/Detroit";
+
+export const menuSections = [
+  { id: "breakfast", title: "Breakfast" },
+  { id: "grill", title: "Off the grill" },
+  { id: "pizza", title: "Pizza", note: "12″ / 16″" },
+  { id: "subs", title: "Subs" },
+] as const;
 
 // ---- Camping (from the campground's own rate sheet) -------------------------
 export const campingFrom = {

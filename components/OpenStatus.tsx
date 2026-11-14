@@ -1,28 +1,30 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { WeekHours } from "@/lib/db";
 import { storeStatus, type Status } from "@/lib/time";
 
-// Live open/closed, always in Luzerne's time zone. Renders a neutral state on
-// the server and fills in on the client, so the clock can't cause a mismatch.
+// Live open/closed, always in Luzerne's time zone, from the hours in the store's
+// database (passed in; null while they load). Renders a neutral state on the
+// server and fills in on the client, so the clock can't cause a mismatch.
 
 function subscribe(onChange: () => void) {
   const id = setInterval(onChange, 30_000);
   return () => clearInterval(id);
 }
 
-function useStatus(): Status | null {
+function useStatus(hours: WeekHours | null): Status | null {
   const snap = useSyncExternalStore(
     subscribe,
-    () => JSON.stringify(storeStatus()),
+    () => (hours ? JSON.stringify(storeStatus(hours)) : ""),
     () => "",
   );
   return snap ? (JSON.parse(snap) as Status) : null;
 }
 
 /** Compact header version: a dot and a word (plus the time on wider screens). */
-export function OpenChip({ showLine = true }: { showLine?: boolean }) {
-  const s = useStatus();
+export function OpenChip({ hours, showLine = true }: { hours: WeekHours | null; showLine?: boolean }) {
+  const s = useStatus(hours);
   const open = s?.open ?? false;
   return (
     <span className="inline-flex flex-col leading-tight" aria-live="polite">
@@ -44,8 +46,8 @@ export function OpenChip({ showLine = true }: { showLine?: boolean }) {
 }
 
 /** The sign's changeable-letter panel: OPEN / CLOSED over a red strip with the time. */
-export function OpenSign() {
-  const s = useStatus();
+export function OpenSign({ hours }: { hours: WeekHours | null }) {
+  const s = useStatus(hours);
   const open = s?.open ?? false;
   return (
     <span

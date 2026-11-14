@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { express } from "@/lib/express";
-import menu from "@/data/menu.json";
-import specials from "@/data/specials.json";
-import SpecialsBoard from "@/components/SpecialsBoard";
+import { Suspense } from "react";
+import { express, menuSections } from "@/lib/express";
+import { getMenu } from "@/lib/db";
 import { PageHero, Seam } from "@/components/Bits";
+import { LiveBuffet, LiveSpecialsBoard } from "@/components/Live";
 
 export const metadata: Metadata = {
   title: `Kitchen & Deli — ${express.name} | ${express.townShort}`,
@@ -12,8 +12,54 @@ export const metadata: Metadata = {
 
 // The kitchen as sign panels: the nightly specials board on red, the menu on
 // birch with kraft price tags, the weekend buffet back in the pines, and the
-// baked goods on red. Menu and specials come from data/menu.json and
-// data/specials.json.
+// baked goods on red. Menu, specials and the buffet come from the store's
+// database (managed in Pilot Light), read at request time.
+
+async function MenuCards() {
+  const menu = await getMenu();
+  return (
+    <>
+      {menuSections.map((sec) => (
+        <div
+          key={sec.id}
+          className="rounded-xl p-6"
+          style={{ background: "var(--paper)", border: "1px solid var(--hairline)" }}
+        >
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="text-2xl" style={{ color: "var(--pine)" }}>{sec.title}</h3>
+            {"note" in sec && sec.note ? (
+              <span className="label" style={{ color: "var(--stone)" }}>{sec.note}</span>
+            ) : null}
+          </div>
+          <div className="mt-3 h-[3px] w-12" style={{ background: "var(--gold)" }} aria-hidden="true" />
+          <ul className="mt-3">
+            {menu[sec.id].map((it, i) => (
+              <li
+                key={it.name}
+                className="flex items-center justify-between gap-4 py-2.5"
+                style={{ borderTop: i ? "1px solid var(--hairline)" : "none" }}
+              >
+                <span className="font-semibold" style={{ color: "var(--bark)" }}>{it.name}</span>
+                {it.price ? <span className="price-tag">{it.price}</span> : null}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </>
+  );
+}
+
+async function BakedGoods() {
+  const { bakery } = await getMenu();
+  return (
+    <>
+      {bakery.map((b) => (
+        <span key={b.name} className="butcher-tag">{b.name}</span>
+      ))}
+    </>
+  );
+}
 
 export default function KitchenPage() {
   return (
@@ -38,7 +84,7 @@ export default function KitchenPage() {
               A different dinner every night.
             </h2>
           </div>
-          <SpecialsBoard />
+          <LiveSpecialsBoard />
         </div>
       </section>
 
@@ -52,33 +98,9 @@ export default function KitchenPage() {
             Made to order.
           </h2>
           <div className="mt-10 grid gap-5 md:grid-cols-2">
-            {menu.sections.map((sec) => (
-              <div
-                key={sec.id}
-                className="rounded-xl p-6"
-                style={{ background: "var(--paper)", border: "1px solid var(--hairline)" }}
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="text-2xl" style={{ color: "var(--pine)" }}>{sec.title}</h3>
-                  {"note" in sec && sec.note ? (
-                    <span className="label" style={{ color: "var(--stone)" }}>{sec.note}</span>
-                  ) : null}
-                </div>
-                <div className="mt-3 h-[3px] w-12" style={{ background: "var(--gold)" }} aria-hidden="true" />
-                <ul className="mt-3">
-                  {sec.items.map((it, i) => (
-                    <li
-                      key={it.name}
-                      className="flex items-center justify-between gap-4 py-2.5"
-                      style={{ borderTop: i ? "1px solid var(--hairline)" : "none" }}
-                    >
-                      <span className="font-semibold" style={{ color: "var(--bark)" }}>{it.name}</span>
-                      <span className="price-tag">{it.price}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <Suspense fallback={<div className="min-h-[36rem] md:col-span-2" />}>
+              <MenuCards />
+            </Suspense>
           </div>
         </div>
       </section>
@@ -96,11 +118,11 @@ export default function KitchenPage() {
           </div>
           <div className="inline-flex flex-col self-start overflow-hidden md:self-auto" style={{ borderRadius: "0.6rem" }}>
             <span className="heading px-6 pt-4 pb-3 text-3xl" style={{ background: "var(--birch)", color: "var(--pine)" }}>
-              {specials.buffet.days}
+              <LiveBuffet part="days" />
             </span>
             <span className="h-[3px]" style={{ background: "var(--gold)" }} aria-hidden="true" />
             <span className="label px-6 py-2.5" style={{ background: "var(--ember)", color: "var(--birch)" }}>
-              {specials.buffet.time}
+              <LiveBuffet part="time" />
             </span>
           </div>
         </div>
@@ -116,9 +138,9 @@ export default function KitchenPage() {
             Baked here.
           </h2>
           <div className="mt-8 flex flex-wrap gap-3">
-            {menu.baked.map((b) => (
-              <span key={b} className="butcher-tag">{b}</span>
-            ))}
+            <Suspense fallback={null}>
+              <BakedGoods />
+            </Suspense>
           </div>
         </div>
       </section>

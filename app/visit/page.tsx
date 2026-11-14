@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { express, outdoors } from "@/lib/express";
-import HoursBoard from "@/components/HoursBoard";
-import { OpenSign } from "@/components/OpenStatus";
+import { LiveHoursBoard, LiveOpenSign } from "@/components/Live";
 import { Arrow, PageHero, Seam } from "@/components/Bits";
 
 export const metadata: Metadata = {
@@ -31,7 +30,7 @@ export default function VisitPage() {
           </a>
         </div>
         <div className="mt-10">
-          <OpenSign />
+          <LiveOpenSign />
         </div>
       </PageHero>
 
@@ -49,7 +48,7 @@ export default function VisitPage() {
               Showers and laundry close an hour before the store.
             </p>
           </div>
-          <HoursBoard />
+          <LiveHoursBoard />
         </div>
       </section>
 

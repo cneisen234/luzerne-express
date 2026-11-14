@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { express, navLinks, hoursDisplay } from "@/lib/express";
+import { express, navLinks } from "@/lib/express";
 import { SignPanel } from "./Logo";
+import { LiveHoursList } from "./Live";
 
 // Site footer: the sign-panel logo, the header's six links under "Explore"
 // (Pilot Light's docs/site-conventions.md §4), how to reach the store, and
@@ -85,12 +86,7 @@ export default async function Footer() {
               Hours
             </h2>
             <ul className="mt-4 space-y-2 text-sm max-w-[15rem]">
-              {hoursDisplay.map((h) => (
-                <li key={h.label} className="flex justify-between gap-4">
-                  <span style={{ color: "var(--pine-mist)" }}>{h.label}</span>
-                  <span className="font-bold">{h.value}</span>
-                </li>
-              ))}
+              <LiveHoursList />
             </ul>
           </div>
         </div>

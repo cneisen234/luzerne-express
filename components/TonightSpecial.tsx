@@ -1,21 +1,21 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import specials from "@/data/specials.json";
+import type { Special } from "@/lib/db";
 import { storeNow } from "@/lib/time";
 
 // Tonight's special as a little sign panel: pine top with the dish, gold seam,
 // red strip with the price. Picks the night in Luzerne's time; neutral on the
-// server so nothing flickers. Specials come from data/specials.json.
+// server so nothing flickers. Specials come from the store's database.
 
 function subscribe(onChange: () => void) {
   const id = setInterval(onChange, 60_000);
   return () => clearInterval(id);
 }
 
-export default function TonightSpecial() {
+export default function TonightSpecial({ specials }: { specials: Special[] }) {
   const day = useSyncExternalStore(subscribe, () => storeNow().day, () => -1);
-  const special = specials.nightly.find((s) => s.day === day);
+  const special = specials.find((s) => s.day === day);
 
   return (
     <div className="w-full max-w-sm overflow-hidden" style={{ borderRadius: "0.6rem" }}>

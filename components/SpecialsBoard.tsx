@@ -1,13 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import specials from "@/data/specials.json";
+import type { Special } from "@/lib/db";
 import { storeNow } from "@/lib/time";
 
 // The week's nightly specials on a letter board: a pine header strip, a gold
 // seam, then one row per night — tonight's row lit up in pine. "Tonight" is
 // worked out in Luzerne's time; on the server no row is lit, so nothing
-// flickers. Specials come from data/specials.json.
+// flickers. Specials come from the store's database.
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 // Show the week starting Monday.
@@ -18,7 +18,7 @@ function subscribe(onChange: () => void) {
   return () => clearInterval(id);
 }
 
-export default function SpecialsBoard() {
+export default function SpecialsBoard({ specials }: { specials: Special[] }) {
   const today = useSyncExternalStore(subscribe, () => storeNow().day, () => -1);
 
   return (
@@ -29,7 +29,7 @@ export default function SpecialsBoard() {
       <div className="seam" aria-hidden="true" />
       <ul>
         {ORDER.map((d, i) => {
-          const s = specials.nightly.find((x) => x.day === d);
+          const s = specials.find((x) => x.day === d);
           if (!s) return null;
           const lit = d === today;
           return (
